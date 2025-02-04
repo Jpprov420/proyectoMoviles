@@ -1,0 +1,15 @@
+# 🔹 IGNORAR ENTORNO VIRTUAL DE PYTHON
+backend/venv/
+*.pyc
+__pycache__/
+
+# 🔹 IGNORAR VARIABLES DE ENTORNO
+backend/.env
+frontend/.env
+
+# 🔹 IGNORAR DEPENDENCIAS DE NODE.JS EN FRONTEND
+frontend/node_modules/
+
+# 🔹 IGNORAR ARCHIVOS DE LOGS Y TEMPORALES
+*.log
+*.sqlite3
