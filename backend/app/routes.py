@@ -20,7 +20,7 @@ def chat():
 
         user_message = data["message"]
 
-        # Obtener las API Keys
+        # Obtener las API Keys desde Flask
         openai_api_key = current_app.config.get("OPENAI_API_KEY")
         google_maps_api_key = current_app.config.get("GOOGLE_MAPS_API_KEY")
 
@@ -31,7 +31,7 @@ def chat():
         openai_client = openai.OpenAI(api_key=openai_api_key)
         gmaps = googlemaps.Client(key=google_maps_api_key)
 
-        # Extraer lugares con NLP mejorado
+        # Extraer lugares desde el mensaje
         try:
             origen, destino = extraer_lugares(user_message)
             print(f"📍 Origen detectado: {origen} | Destino detectado: {destino}")
@@ -39,14 +39,14 @@ def chat():
             print(f"❌ Error al extraer lugares: {str(e)}")
             return jsonify({"error": str(e)}), 400
 
-        # Obtener la mejor ruta en bus desde Google Maps API
+        # Obtener la mejor ruta de transporte público
         ruta = obtener_ruta_transporte(origen, destino, gmaps)
 
-        # Generar respuesta conversacional con OpenAI
+        # Generar respuesta con OpenAI
         response = openai_client.chat.completions.create(
             model="gpt-4",
             messages=[
-                {"role": "system", "content": "Eres un asistente de rutas de buses en Quito."},
+                {"role": "system", "content": "Eres un asistente que me da la ruta mas corta de buses en Quito."},
                 {"role": "user", "content": f"{user_message}"},
                 {"role": "assistant", "content": ruta}
             ]
@@ -58,28 +58,32 @@ def chat():
     except Exception as e:
         print(f"❌ Error en el backend: {e}")
         return jsonify({"error": "Error interno del servidor."}), 500
-     
-def obtener_ruta_transporte(origen, destino, gmaps):
-    try:
 
+
+def obtener_ruta_transporte(origen, destino, gmaps):
+    """
+    Obtiene la mejor ruta de transporte público con base en el tiempo más corto.
+    """
+    try:
         rutas = gmaps.directions(
             origen,
             destino,
-            mode="transit"
+            mode="transit",
+            departure_time="now",  # Usamos tráfico en tiempo real
+            alternatives=True  # Pedimos múltiples opciones
         )
 
         if not rutas:
             return "❌ No se encontraron rutas de transporte público disponibles."
 
-        # Ordenar rutas por duración y elegir la más rápida
-        rutas_ordenadas = sorted(rutas, key=lambda r: r["legs"][0]["duration"]["value"])
-        mejor_ruta = rutas_ordenadas[0]
-        duracion_total = mejor_ruta["legs"][0]["duration"]["text"]
+        # Ordenamos las rutas por duración en segundos y elegimos la más rápida
+        ruta_mas_corta = min(rutas, key=lambda r: r["legs"][0]["duration"]["value"])
+        duracion_total = ruta_mas_corta["legs"][0]["duration"]["text"]
 
         print(f"✅ Mejor ruta seleccionada: {duracion_total}")
 
         pasos = []
-        for i, paso in enumerate(mejor_ruta["legs"][0]["steps"]):
+        for i, paso in enumerate(ruta_mas_corta["legs"][0]["steps"]):
             if "transit_details" in paso:
                 detalles = paso["transit_details"]
                 nombre_linea = detalles["line"]["short_name"]
