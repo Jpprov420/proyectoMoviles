@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify, current_app
 import openai
 import googlemaps
-from .utils import extraer_lugares
+from .utils import extraer_lugares, obtener_paradas_reales
 
 # Crear Blueprint para el chatbot
 chatbot_routes = Blueprint("chatbot", __name__)
@@ -46,7 +46,7 @@ def chat():
         response = openai_client.chat.completions.create(
             model="gpt-4",
             messages=[
-                {"role": "system", "content": "Eres un asistente que me da la ruta mas corta de buses en Quito."},
+                {"role": "system", "content": "Eres un asistente que da la mejor ruta de buses en Quito."},
                 {"role": "user", "content": f"{user_message}"},
                 {"role": "assistant", "content": ruta}
             ]
@@ -62,25 +62,29 @@ def chat():
 
 def obtener_ruta_transporte(origen, destino, gmaps):
     """
-    Obtiene la mejor ruta de transporte público con base en el tiempo más corto.
+    Obtiene la mejor ruta de transporte público con base en tráfico y tiempo real.
     """
     try:
         rutas = gmaps.directions(
             origen,
             destino,
             mode="transit",
-            departure_time="now",  # Usamos tráfico en tiempo real
+            departure_time="now",  # Tráfico en tiempo real
             alternatives=True  # Pedimos múltiples opciones
         )
 
         if not rutas:
             return "❌ No se encontraron rutas de transporte público disponibles."
 
-        # Ordenamos las rutas por duración en segundos y elegimos la más rápida
+        # Ordenamos por la duración en segundos y elegimos la más rápida
         ruta_mas_corta = min(rutas, key=lambda r: r["legs"][0]["duration"]["value"])
         duracion_total = ruta_mas_corta["legs"][0]["duration"]["text"]
 
         print(f"✅ Mejor ruta seleccionada: {duracion_total}")
+
+        # Obtener paradas reales cercanas al origen y destino
+        paradas_origen = obtener_paradas_reales(origen, destino)
+        paradas_destino = obtener_paradas_reales(destino, origen)
 
         pasos = []
         for i, paso in enumerate(ruta_mas_corta["legs"][0]["steps"]):
@@ -101,7 +105,12 @@ def obtener_ruta_transporte(origen, destino, gmaps):
             else:
                 pasos.append(f"{i+1}️⃣ 🚶 {paso['html_instructions']}")
 
-        return f"🕒 **Tiempo estimado:** {duracion_total}\n\n" + "\n".join(pasos)
+        return (
+            f"🕒 **Tiempo estimado:** {duracion_total}\n\n"
+            f"🚌 **Paradas cercanas al origen:** {', '.join(paradas_origen)}\n"
+            f"🏁 **Paradas cercanas al destino:** {', '.join(paradas_destino)}\n\n"
+            + "\n".join(pasos)
+        )
 
     except Exception as e:
         return f"❌ Error al obtener la ruta: {str(e)}"
