@@ -1,0 +1,18 @@
+# 🔥 Ignorar entornos virtuales y dependencias
+backend/venv/
+backend/__pycache__/
+backend/*.pyc
+backend/.env
+backend/.DS_Store
+
+# 🔥 Ignorar archivos de Expo en el frontend
+frontend/.expo/
+frontend/.expo-shared/
+frontend/node_modules/
+frontend/yarn.lock
+frontend/npm-debug.log
+frontend/*.log
+
+# 🔥 Ignorar archivos del sistema
+.DS_Store
+Thumbs.db
