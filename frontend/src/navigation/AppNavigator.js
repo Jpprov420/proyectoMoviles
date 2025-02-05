@@ -11,9 +11,27 @@ const AppNavigator = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Login">
-        <Stack.Screen name="Login" component={LoginScreen}/>
-        <Stack.Screen name="Register" component={RegisterScreen}/>
-        <Stack.Screen name="Chat" component={ChatScreen} options={{ title: "Chat de Rutas" }} />
+        <Stack.Screen 
+          name="Login" 
+          component={LoginScreen} 
+          options={{ 
+            title: "Login", 
+            headerTitleAlign: 'center' // Centra el título de la pantalla Login
+          }}
+        />
+        <Stack.Screen 
+          name="Register" 
+          component={RegisterScreen} 
+          options={{ 
+            title: "Register", 
+            headerTitleAlign: 'center' // Centra el título de la pantalla Register
+          }} 
+        />
+        <Stack.Screen 
+          name="Chat" 
+          component={ChatScreen} 
+          options={{ title: "Chat de Rutas" }} 
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

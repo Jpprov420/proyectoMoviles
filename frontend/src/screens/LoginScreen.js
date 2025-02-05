@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Image, ActivityIndicator, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from '../api/firebaseConfig';
@@ -37,11 +37,13 @@ const LoginScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Iniciar Sesión</Text>
+      <Image source={require('../../assets/train.png')} style={styles.icon} />
+      <Text style={styles.title}>Movilízate UIO!</Text>
+      <Text style={styles.subtitle}>Planifica tu viaje en transporte público con precisión.</Text>
       
       <TextInput
         style={styles.input}
-        placeholder="Correo electrónico"
+        placeholder="Ingresa tu correo electrónico"
         keyboardType="email-address"
         autoCapitalize="none"
         value={email}
@@ -49,20 +51,26 @@ const LoginScreen = () => {
       />
       <TextInput
         style={styles.input}
-        placeholder="Contraseña"
+        placeholder="Ingresa tu contraseña"
         secureTextEntry
         value={password}
         onChangeText={setPassword}
       />
 
-      {loading ? <ActivityIndicator size="large" color="#0000ff" /> : null}
+      <View style={styles.linksContainer}>
+        {/* <TouchableOpacity onPress={() => navigation.navigate("ForgotPassword")}>
+          <Text style={styles.linkText}>¿Olvidaste tu contraseña?</Text>
+        </TouchableOpacity> */}
+
+        <TouchableOpacity onPress={() => navigation.navigate("Register")}>
+          <Text style={styles.linkText}>Crear cuenta</Text>
+        </TouchableOpacity>
+      </View>
+
+      {loading && <ActivityIndicator size="large" color="#6A5ACD" />}
 
       <TouchableOpacity style={styles.button} onPress={handleLogin}>
         <Text style={styles.buttonText}>Iniciar Sesión</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity onPress={() => navigation.replace("Register")}>
-        <Text style={styles.linkText}>¿No tienes cuenta? Regístrate</Text>
       </TouchableOpacity>
     </View>
   );
@@ -74,35 +82,56 @@ const styles = {
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 20,
+    backgroundColor: '#F5F5F5',
+  },
+  icon: {
+    width: 100,
+    height: 100,
+    marginBottom: 20,
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 5,
+  },
+  subtitle: {
+    fontSize: 14,
+    color: '#666',
+    textAlign: 'center',
     marginBottom: 20,
   },
   input: {
     width: '100%',
     height: 50,
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: '#ddd',
     borderRadius: 10,
-    paddingHorizontal: 10,
+    paddingHorizontal: 15,
+    backgroundColor: '#FFF',
     marginBottom: 10,
   },
+  linksContainer: {
+    flexDirection: 'column', // Alineado vertical
+    alignItems: 'flex-end', // Alineado a la derecha
+    width: '100%',
+    marginBottom: 10, // Espacio antes del botón
+  },
+  linkText: {
+    color: '#6A5ACD',
+    textDecorationLine: 'underline',
+    marginBottom: 10, // Espacio entre los enlaces
+  },
   button: {
-    backgroundColor: '#007AFF',
+    backgroundColor: '#6A5ACD',
     padding: 15,
     borderRadius: 10,
     width: '100%',
     alignItems: 'center',
   },
   buttonText: {
-    color: '#fff',
+    color: '#FFF',
     fontWeight: 'bold',
-  },
-  linkText: {
-    marginTop: 10,
-    color: '#007AFF',
   },
 };
 
