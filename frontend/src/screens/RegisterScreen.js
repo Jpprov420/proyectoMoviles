@@ -3,6 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, Alert, ActivityIndicator } fro
 import { useNavigation } from '@react-navigation/native';
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from '../api/firebaseConfig';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 const RegisterScreen = () => {
   const navigation = useNavigation();
@@ -49,28 +50,39 @@ const RegisterScreen = () => {
     <View style={styles.container}>
       <Text style={styles.title}>Registro</Text>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Correo electrónico"
-        keyboardType="email-address"
-        autoCapitalize="none"
-        value={email}
-        onChangeText={setEmail}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Contraseña"
-        secureTextEntry
-        value={password}
-        onChangeText={setPassword}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Confirmar contraseña"
-        secureTextEntry
-        value={confirmPassword}
-        onChangeText={setConfirmPassword}
-      />
+      <View style={styles.inputContainer}>
+        <Icon name="mail-outline" size={24} color="#6A5ACD" style={styles.icon} />
+        <TextInput
+          style={styles.input}
+          placeholder="Correo electrónico"
+          keyboardType="email-address"
+          autoCapitalize="none"
+          value={email}
+          onChangeText={setEmail}
+        />
+      </View>
+
+      <View style={styles.inputContainer}>
+        <Icon name="lock-closed-outline" size={24} color="#6A5ACD" style={styles.icon} />
+        <TextInput
+          style={styles.input}
+          placeholder="Contraseña"
+          secureTextEntry
+          value={password}
+          onChangeText={setPassword}
+        />
+      </View>
+
+      <View style={styles.inputContainer}>
+        <Icon name="lock-closed-outline" size={24} color="#6A5ACD" style={styles.icon} />
+        <TextInput
+          style={styles.input}
+          placeholder="Confirmar contraseña"
+          secureTextEntry
+          value={confirmPassword}
+          onChangeText={setConfirmPassword}
+        />
+      </View>
 
       {loading && <ActivityIndicator size="large" color="#007AFF" />}
 
@@ -99,7 +111,9 @@ const styles = {
     marginBottom: 20,
     color: '#333',
   },
-  input: {
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
     width: '100%',
     height: 50,
     borderWidth: 1,
@@ -109,8 +123,16 @@ const styles = {
     marginBottom: 10,
     backgroundColor: '#fff',
   },
+  icon: {    
+    marginRight: 10,
+  },
+  input: {
+    flex: 1,
+    height: '100%',
+    fontSize: 16,
+  }, 
   button: {
-    backgroundColor: '#007AFF',
+    backgroundColor: '#6A5ACD',
     padding: 15,
     borderRadius: 10,
     width: '100%',
@@ -124,9 +146,11 @@ const styles = {
   },
   linkText: {
     marginTop: 15,
-    color: '#007AFF',
+    color: '#6A5ACD',
     fontSize: 14,
   },
 };
 
 export default RegisterScreen;
+
+

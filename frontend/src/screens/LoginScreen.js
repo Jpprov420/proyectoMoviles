@@ -45,7 +45,7 @@ const LoginScreen = () => {
       
       {/* Campo de correo */}
       <View style={styles.inputContainer}>
-        <Icon name="email-outline" size={24} color="#666" style={styles.inputIcon} />
+        <Icon name="email-outline" size={24} color="#6A5ACD" style={styles.inputIcon} />
         <TextInput
           style={styles.input}
           placeholder="Ingresa tu correo electrónico"
@@ -58,7 +58,7 @@ const LoginScreen = () => {
 
       {/* Campo de contraseña */}
       <View style={styles.inputContainer}>
-        <Icon name="lock-outline" size={24} color="#666" style={styles.inputIcon} />
+        <Icon name="lock-outline" size={24} color="#6A5ACD" style={styles.inputIcon} />
         <TextInput
           style={styles.input}
           placeholder="Ingresa tu contraseña"
@@ -67,7 +67,7 @@ const LoginScreen = () => {
           onChangeText={setPassword}
         />
         <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.passwordToggle}>
-          <Icon name={showPassword ? "eye-off-outline" : "eye-outline"} size={24} color="#666" />
+          <Icon name={showPassword ? "eye-off-outline" : "eye-outline"} size={24} color="#6A5ACD" />
         </TouchableOpacity>
       </View>
 
