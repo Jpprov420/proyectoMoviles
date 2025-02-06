@@ -2,38 +2,20 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, Image, ActivityIndicator, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { getAuth, signOut } from 'firebase/auth';
-import { getFirestore, doc, getDoc} from 'firebase/firestore';
+import { Ionicons } from '@expo/vector-icons';
 
 const PerfilScreen = () => {
   const navigation = useNavigation();
   const auth = getAuth();
-  const db = getFirestore();
-
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [userName, setUserName] = useState('');
 
   useEffect(() => {
-    const fetchUserData = async () => {
-      const currentUser = auth.currentUser;
-      if (currentUser) {
-        setUser(currentUser);
-        try {
-          const userDoc = await getDoc(doc(db, "users", currentUser.uid));
-          if (userDoc.exists()) {
-            setUserName(userDoc.data().displayName || "Usuario Anónimo");
-          } else {
-            setUserName("Usuario Anónimo");
-          }
-        } catch (error) {
-          console.error("Error al obtener datos del usuario:", error);
-          setUserName("Usuario Anónimo");
-        }
-      }
-      setLoading(false);
-    };
-
-    fetchUserData();
+    const currentUser = auth.currentUser;
+    if (currentUser) {
+      setUser(currentUser);
+    }
+    setLoading(false);
   }, []);
 
   const handleLogout = async () => {
@@ -51,12 +33,14 @@ const PerfilScreen = () => {
 
   return (
     <View style={styles.container}>
+      <TouchableOpacity style={styles.closeButton} onPress={() => navigation.goBack()}>
+        <Ionicons name="close" size={24} color="black" />
+      </TouchableOpacity>
       <Image
         source={{ uri: user?.photoURL || 'https://via.placeholder.com/150' }}
         style={styles.profileImage}
       />
-       <Text style={styles.name}>{userName}</Text>
-
+      <Text style={styles.name}>{user?.displayName || "Usuario Anónimo"}</Text>
       <Text style={styles.email}>{user?.email}</Text>
 
       <TouchableOpacity style={styles.button} onPress={handleLogout}>
@@ -72,6 +56,12 @@ const styles = {
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#F5F5F5',
+  },
+  closeButton: {
+    position: 'absolute',
+    top: 40,
+    right: 20,
+    padding: 10,
   },
   profileImage: {
     width: 100,
