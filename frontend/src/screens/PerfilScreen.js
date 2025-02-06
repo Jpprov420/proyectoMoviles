@@ -2,19 +2,38 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, Image, ActivityIndicator, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { getAuth, signOut } from 'firebase/auth';
+import { getFirestore, doc, getDoc} from 'firebase/firestore';
 
 const PerfilScreen = () => {
   const navigation = useNavigation();
   const auth = getAuth();
+  const db = getFirestore();
+
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [userName, setUserName] = useState('');
 
   useEffect(() => {
-    const currentUser = auth.currentUser;
-    if (currentUser) {
-      setUser(currentUser);
-    }
-    setLoading(false);
+    const fetchUserData = async () => {
+      const currentUser = auth.currentUser;
+      if (currentUser) {
+        setUser(currentUser);
+        try {
+          const userDoc = await getDoc(doc(db, "users", currentUser.uid));
+          if (userDoc.exists()) {
+            setUserName(userDoc.data().displayName || "Usuario Anónimo");
+          } else {
+            setUserName("Usuario Anónimo");
+          }
+        } catch (error) {
+          console.error("Error al obtener datos del usuario:", error);
+          setUserName("Usuario Anónimo");
+        }
+      }
+      setLoading(false);
+    };
+
+    fetchUserData();
   }, []);
 
   const handleLogout = async () => {
@@ -36,7 +55,8 @@ const PerfilScreen = () => {
         source={{ uri: user?.photoURL || 'https://via.placeholder.com/150' }}
         style={styles.profileImage}
       />
-      <Text style={styles.name}>{user?.displayName || "Usuario Anónimo"}</Text>
+       <Text style={styles.name}>{userName}</Text>
+
       <Text style={styles.email}>{user?.email}</Text>
 
       <TouchableOpacity style={styles.button} onPress={handleLogout}>

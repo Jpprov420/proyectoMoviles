@@ -5,6 +5,7 @@ import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from '../api/firebaseConfig';
 import Icon from 'react-native-vector-icons/Ionicons';
 
+
 const RegisterScreen = () => {
   const navigation = useNavigation();
   const [name, setName] = useState('');
@@ -15,6 +16,11 @@ const RegisterScreen = () => {
   const [address, setAddress] = useState('');
   const [gender, setGender] = useState('');
   const [loading, setLoading] = useState(false);
+
+  const getFirstName = (fullName) =>  {
+    return fullName.split('') [0];
+  }
+
 
   const handleRegister = async () => {
     if (!name || !email || !password || !confirmPassword || !age || !address || !gender) {
