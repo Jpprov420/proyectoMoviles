@@ -14,26 +14,17 @@ const AppNavigator = () => {
         <Stack.Screen 
           name="Login" 
           component={LoginScreen} 
-          options={{ 
-            title: "Login", 
-            headerTitleAlign: 'center' // Centra el título de la pantalla Login
-          }}
+          options={{ title: "" }} // No mostrar el título
         />
         <Stack.Screen 
           name="Register" 
           component={RegisterScreen} 
-          options={{ 
-            title: "Register", 
-            headerTitleAlign: 'center' // Centra el título de la pantalla Register
-          }} 
+          options={{ title: "" }} // No mostrar el título
         />
         <Stack.Screen 
           name="Chat" 
           component={ChatScreen} 
-          options={{
-            title: "Chat de Rutas",
-            headerTitleAlign: 'center' // Centra el título horizontalmente
-          }}
+          options={{ title: "" }} // No mostrar el título
         />
       </Stack.Navigator>
     </NavigationContainer>
