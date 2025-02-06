@@ -152,5 +152,3 @@ const styles = {
 };
 
 export default RegisterScreen;
-
-
