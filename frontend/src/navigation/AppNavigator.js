@@ -10,21 +10,21 @@ const Stack = createStackNavigator();
 const AppNavigator = () => {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Login">
+      <Stack.Navigator 
+        initialRouteName="Login"
+        screenOptions={{ headerShown: false }} // Desactiva los encabezados y el espacio
+      >
         <Stack.Screen 
           name="Login" 
           component={LoginScreen} 
-          options={{ title: "" }} // No mostrar el título
         />
         <Stack.Screen 
           name="Register" 
           component={RegisterScreen} 
-          options={{ title: "" }} // No mostrar el título
         />
         <Stack.Screen 
           name="Chat" 
           component={ChatScreen} 
-          options={{ title: "" }} // No mostrar el título
         />
       </Stack.Navigator>
     </NavigationContainer>
