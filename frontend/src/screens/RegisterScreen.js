@@ -7,13 +7,17 @@ import Icon from 'react-native-vector-icons/Ionicons';
 
 const RegisterScreen = () => {
   const navigation = useNavigation();
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [age, setAge] = useState('');
+  const [address, setAddress] = useState('');
+  const [gender, setGender] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleRegister = async () => {
-    if (!email || !password || !confirmPassword) {
+    if (!name || !email || !password || !confirmPassword || !age || !address || !gender) {
       Alert.alert("Error", "Todos los campos son obligatorios.");
       return;
     }
@@ -25,6 +29,11 @@ const RegisterScreen = () => {
 
     if (password !== confirmPassword) {
       Alert.alert("Error", "Las contraseñas no coinciden.");
+      return;
+    }
+
+    if (isNaN(age) || age < 18) {
+      Alert.alert("Error", "Por favor, ingresa una edad válida y mayor a 18 años.");
       return;
     }
 
@@ -49,6 +58,16 @@ const RegisterScreen = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Registro</Text>
+
+      <View style={styles.inputContainer}>
+        <Icon name="person-outline" size={24} color="#6A5ACD" style={styles.icon} />
+        <TextInput
+          style={styles.input}
+          placeholder="Nombre completo"
+          value={name}
+          onChangeText={setName}
+        />
+      </View>
 
       <View style={styles.inputContainer}>
         <Icon name="mail-outline" size={24} color="#6A5ACD" style={styles.icon} />
@@ -81,6 +100,37 @@ const RegisterScreen = () => {
           secureTextEntry
           value={confirmPassword}
           onChangeText={setConfirmPassword}
+        />
+      </View>
+
+      <View style={styles.inputContainer}>
+        <Icon name="calendar-outline" size={24} color="#6A5ACD" style={styles.icon} />
+        <TextInput
+          style={styles.input}
+          placeholder="Edad"
+          keyboardType="numeric"
+          value={age}
+          onChangeText={setAge}
+        />
+      </View>
+
+      <View style={styles.inputContainer}>
+        <Icon name="location-outline" size={24} color="#6A5ACD" style={styles.icon} />
+        <TextInput
+          style={styles.input}
+          placeholder="Dirección"
+          value={address}
+          onChangeText={setAddress}
+        />
+      </View>
+
+      <View style={styles.inputContainer}>
+        <Icon name="male-female" size={24} color="#6A5ACD" style={styles.icon} />
+        <TextInput
+          style={styles.input}
+          placeholder="Sexo (Masculino/Femenino)"
+          value={gender}
+          onChangeText={setGender}
         />
       </View>
 

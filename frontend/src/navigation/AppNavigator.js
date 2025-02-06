@@ -4,6 +4,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import ChatScreen from "../screens/ChatScreen";
 import LoginScreen from "../screens/LoginScreen";
 import RegisterScreen from "../screens/RegisterScreen";
+import ProfileScreen from '../screens/PerfilScreen';
 
 const Stack = createStackNavigator();
 
@@ -27,6 +28,9 @@ const AppNavigator = () => {
             headerTitleAlign: 'center' // Centra el título de la pantalla Register
           }} 
         />
+
+        <Stack.Screen name="Profile" component={ProfileScreen} />
+        
         <Stack.Screen 
           name="Chat" 
           component={ChatScreen} 
