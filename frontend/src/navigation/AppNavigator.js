@@ -30,7 +30,10 @@ const AppNavigator = () => {
         <Stack.Screen 
           name="Chat" 
           component={ChatScreen} 
-          options={{ title: "Chat de Rutas" }} 
+          options={{
+            title: "Chat de Rutas",
+            headerTitleAlign: 'center' // Centra el título horizontalmente
+          }}
         />
       </Stack.Navigator>
     </NavigationContainer>
