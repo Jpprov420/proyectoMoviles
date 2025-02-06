@@ -1,45 +1,86 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Image, ActivityIndicator } from 'react-native';
-import { doc, getDoc } from "firebase/firestore";
-import { auth, db } from "../api/firebaseConfig";
+import { View, Text, TouchableOpacity, Image, ActivityIndicator, Alert } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { getAuth, signOut } from 'firebase/auth';
 
 const PerfilScreen = () => {
-  const [perfil, setPerfil] = useState(null);
+  const navigation = useNavigation();
+  const auth = getAuth();
+  const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchPerfil = async () => {
-      const user = auth.currentUser;
-      if (user) {
-        const docRef = doc(db, "usuarios", user.uid);
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-          setPerfil(docSnap.data());
-        }
-      }
-      setLoading(false);
-    };
-
-    fetchPerfil();
+    const currentUser = auth.currentUser;
+    if (currentUser) {
+      setUser(currentUser);
+    }
+    setLoading(false);
   }, []);
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      navigation.replace("Login");
+    } catch (error) {
+      Alert.alert("Error", "No se pudo cerrar sesión.");
+    }
+  };
 
   if (loading) {
     return <ActivityIndicator size="large" color="#6A5ACD" />;
   }
 
   return (
-    <View>
-      {perfil ? (
-        <>
-          <Image source={{ uri: perfil.fotoPerfil || "https://via.placeholder.com/150" }} style={{ width: 100, height: 100, borderRadius: 50 }} />
-          <Text>Nombre: {perfil.nombre}</Text>
-          <Text>Email: {perfil.email}</Text>
-        </>
-      ) : (
-        <Text>No se encontró el perfil.</Text>
-      )}
+    <View style={styles.container}>
+      <Image
+        source={{ uri: user?.photoURL || 'https://via.placeholder.com/150' }}
+        style={styles.profileImage}
+      />
+      <Text style={styles.name}>{user?.displayName || "Usuario Anónimo"}</Text>
+      <Text style={styles.email}>{user?.email}</Text>
+
+      <TouchableOpacity style={styles.button} onPress={handleLogout}>
+        <Text style={styles.buttonText}>Cerrar Sesión</Text>
+      </TouchableOpacity>
     </View>
   );
+};
+
+const styles = {
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F5F5F5',
+  },
+  profileImage: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    marginBottom: 20,
+  },
+  name: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 5,
+  },
+  email: {
+    fontSize: 16,
+    color: '#666',
+    marginBottom: 20,
+  },
+  button: {
+    backgroundColor: '#6A5ACD',
+    padding: 15,
+    borderRadius: 10,
+    width: '80%',
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: '#FFF',
+    fontWeight: 'bold',
+  },
 };
 
 export default PerfilScreen;
