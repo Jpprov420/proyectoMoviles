@@ -1,19 +1,20 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import React, { useState } from "react";
+import { View, Text, TextInput, TouchableOpacity, Alert, ActivityIndicator } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from '../api/firebaseConfig';
-import Icon from 'react-native-vector-icons/Ionicons';
+import { doc, setDoc } from "firebase/firestore"; // Importa funciones de Firestore
+import { auth, db } from "../api/firebaseConfig"; // Importa la configuración de Firebase
+import Icon from "react-native-vector-icons/Ionicons";
 
 const RegisterScreen = () => {
   const navigation = useNavigation();
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [age, setAge] = useState('');
-  const [address, setAddress] = useState('');
-  const [gender, setGender] = useState('');
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [age, setAge] = useState("");
+  const [address, setAddress] = useState("");
+  const [gender, setGender] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleRegister = async () => {
@@ -39,7 +40,18 @@ const RegisterScreen = () => {
 
     setLoading(true);
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      // Agregar los datos del usuario a Firestore
+      await setDoc(doc(db, "users", user.uid), {
+        name,
+        email,
+        age: parseInt(age, 10), // Guardar la edad como número
+        address,
+        gender,
+      });
+
       setLoading(false);
       Alert.alert("Cuenta creada", "Tu cuenta ha sido registrada correctamente.");
       navigation.replace("Login"); // Evita bucles
@@ -150,53 +162,53 @@ const RegisterScreen = () => {
 const styles = {
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     paddingHorizontal: 20,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: "#F5F5F5",
   },
   title: {
     fontSize: 26,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 20,
-    color: '#333',
+    color: "#333",
   },
   inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    width: '100%',
+    flexDirection: "row",
+    alignItems: "center",
+    width: "100%",
     height: 50,
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
     borderRadius: 10,
     paddingHorizontal: 10,
     marginBottom: 10,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
-  icon: {    
+  icon: {
     marginRight: 10,
   },
   input: {
     flex: 1,
-    height: '100%',
+    height: "100%",
     fontSize: 16,
-  }, 
+  },
   button: {
-    backgroundColor: '#6A5ACD',
+    backgroundColor: "#6A5ACD",
     padding: 15,
     borderRadius: 10,
-    width: '100%',
-    alignItems: 'center',
+    width: "100%",
+    alignItems: "center",
     marginTop: 10,
   },
   buttonText: {
-    color: '#fff',
-    fontWeight: 'bold',
+    color: "#fff",
+    fontWeight: "bold",
     fontSize: 16,
   },
   linkText: {
     marginTop: 15,
-    color: '#6A5ACD',
+    color: "#6A5ACD",
     fontSize: 14,
   },
 };
