@@ -16,6 +16,7 @@ const RegisterScreen = () => {
   const [gender, setGender] = useState('');
   const [loading, setLoading] = useState(false);
 
+  //función para manejar la validación del registro en FireBase
   const handleRegister = async () => {
     if (!name || !email || !password || !confirmPassword || !age || !address || !gender) {
       Alert.alert("Error", "Todos los campos son obligatorios.");
@@ -37,10 +38,12 @@ const RegisterScreen = () => {
       return;
     }
 
+    //Si pasa todas las validaciónes establecemos la variable de estado Loading en true para que se active el ActivityIndicatory aparezca el spinner de carga
     setLoading(true);
     try {
+      //Creamos el usuario en Firebase
       await createUserWithEmailAndPassword(auth, email, password);
-      setLoading(false);
+      setLoading(false);//Desactivamos el spinner de carga
       Alert.alert("Cuenta creada", "Tu cuenta ha sido registrada correctamente.");
       navigation.replace("Login"); // Evita bucles
     } catch (error) {
@@ -134,6 +137,7 @@ const RegisterScreen = () => {
         />
       </View>
 
+      {/*Agregamos un indicador de carga mientras se registra el usuario*/}
       {loading && <ActivityIndicator size="large" color="#007AFF" />}
 
       <TouchableOpacity style={styles.button} onPress={handleRegister}>
