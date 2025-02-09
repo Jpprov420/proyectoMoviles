@@ -3,16 +3,21 @@ import { View, Text, TextInput, TouchableOpacity, Alert, ActivityIndicator } fro
 import { useNavigation } from '@react-navigation/native';
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from '../api/firebaseConfig';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 const RegisterScreen = () => {
   const navigation = useNavigation();
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [age, setAge] = useState('');
+  const [address, setAddress] = useState('');
+  const [gender, setGender] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleRegister = async () => {
-    if (!email || !password || !confirmPassword) {
+    if (!name || !email || !password || !confirmPassword || !age || !address || !gender) {
       Alert.alert("Error", "Todos los campos son obligatorios.");
       return;
     }
@@ -24,6 +29,11 @@ const RegisterScreen = () => {
 
     if (password !== confirmPassword) {
       Alert.alert("Error", "Las contraseñas no coinciden.");
+      return;
+    }
+
+    if (isNaN(age) || age < 18) {
+      Alert.alert("Error", "Por favor, ingresa una edad válida y mayor a 18 años.");
       return;
     }
 
@@ -49,28 +59,80 @@ const RegisterScreen = () => {
     <View style={styles.container}>
       <Text style={styles.title}>Registro</Text>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Correo electrónico"
-        keyboardType="email-address"
-        autoCapitalize="none"
-        value={email}
-        onChangeText={setEmail}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Contraseña"
-        secureTextEntry
-        value={password}
-        onChangeText={setPassword}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Confirmar contraseña"
-        secureTextEntry
-        value={confirmPassword}
-        onChangeText={setConfirmPassword}
-      />
+      <View style={styles.inputContainer}>
+        <Icon name="person-outline" size={24} color="#6A5ACD" style={styles.icon} />
+        <TextInput
+          style={styles.input}
+          placeholder="Nombre completo"
+          value={name}
+          onChangeText={setName}
+        />
+      </View>
+
+      <View style={styles.inputContainer}>
+        <Icon name="mail-outline" size={24} color="#6A5ACD" style={styles.icon} />
+        <TextInput
+          style={styles.input}
+          placeholder="Correo electrónico"
+          keyboardType="email-address"
+          autoCapitalize="none"
+          value={email}
+          onChangeText={setEmail}
+        />
+      </View>
+
+      <View style={styles.inputContainer}>
+        <Icon name="lock-closed-outline" size={24} color="#6A5ACD" style={styles.icon} />
+        <TextInput
+          style={styles.input}
+          placeholder="Contraseña"
+          secureTextEntry
+          value={password}
+          onChangeText={setPassword}
+        />
+      </View>
+
+      <View style={styles.inputContainer}>
+        <Icon name="lock-closed-outline" size={24} color="#6A5ACD" style={styles.icon} />
+        <TextInput
+          style={styles.input}
+          placeholder="Confirmar contraseña"
+          secureTextEntry
+          value={confirmPassword}
+          onChangeText={setConfirmPassword}
+        />
+      </View>
+
+      <View style={styles.inputContainer}>
+        <Icon name="calendar-outline" size={24} color="#6A5ACD" style={styles.icon} />
+        <TextInput
+          style={styles.input}
+          placeholder="Edad"
+          keyboardType="numeric"
+          value={age}
+          onChangeText={setAge}
+        />
+      </View>
+
+      <View style={styles.inputContainer}>
+        <Icon name="location-outline" size={24} color="#6A5ACD" style={styles.icon} />
+        <TextInput
+          style={styles.input}
+          placeholder="Dirección"
+          value={address}
+          onChangeText={setAddress}
+        />
+      </View>
+
+      <View style={styles.inputContainer}>
+        <Icon name="male-female" size={24} color="#6A5ACD" style={styles.icon} />
+        <TextInput
+          style={styles.input}
+          placeholder="Sexo (Masculino/Femenino)"
+          value={gender}
+          onChangeText={setGender}
+        />
+      </View>
 
       {loading && <ActivityIndicator size="large" color="#007AFF" />}
 
@@ -99,7 +161,9 @@ const styles = {
     marginBottom: 20,
     color: '#333',
   },
-  input: {
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
     width: '100%',
     height: 50,
     borderWidth: 1,
@@ -109,8 +173,16 @@ const styles = {
     marginBottom: 10,
     backgroundColor: '#fff',
   },
+  icon: {    
+    marginRight: 10,
+  },
+  input: {
+    flex: 1,
+    height: '100%',
+    fontSize: 16,
+  }, 
   button: {
-    backgroundColor: '#007AFF',
+    backgroundColor: '#6A5ACD',
     padding: 15,
     borderRadius: 10,
     width: '100%',
@@ -124,7 +196,7 @@ const styles = {
   },
   linkText: {
     marginTop: 15,
-    color: '#007AFF',
+    color: '#6A5ACD',
     fontSize: 14,
   },
 };
