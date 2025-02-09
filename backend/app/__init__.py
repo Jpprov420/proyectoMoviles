@@ -1,3 +1,4 @@
+#OS permite acceder a las variables de entorno
 import os
 from flask import Flask
 from flask_cors import CORS
@@ -10,7 +11,7 @@ def create_app():
     app = Flask(__name__)
     CORS(app)  # Habilitar CORS para evitar restricciones en las peticiones del frontend
 
-    # Guardar las API Keys en la configuración de Flask
+    # Guardar las variable de entorno previamente cargadas por load_dotenv() en la configuración de Flask
     app.config["OPENAI_API_KEY"] = os.getenv("OPENAI_API_KEY")
     app.config["GOOGLE_MAPS_API_KEY"] = os.getenv("GOOGLE_MAPS_API_KEY")
 

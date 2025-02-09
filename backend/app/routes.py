@@ -1,3 +1,4 @@
+#current_app accede a la configuración de flask donde estan las variables de entorno
 from flask import Blueprint, request, jsonify, current_app
 import openai
 import googlemaps
@@ -6,7 +7,11 @@ from .utils import extraer_lugares, obtener_paradas_reales
 # Crear Blueprint para el chatbot
 chatbot_routes = Blueprint("chatbot", __name__)
 
+
+#Asociamos una función con una ruta específica de la API, la ruta sería /chat
 @chatbot_routes.route("/chat", methods=["POST"])
+
+
 def chat():
     try:
         if not request.is_json:
@@ -18,6 +23,7 @@ def chat():
         if "message" not in data or not data["message"]:
             return jsonify({"error": "Mensaje vacío o incorrecto."}), 400
 
+        #Extraemos el mensaje del usuario
         user_message = data["message"]
 
         # Obtener las API Keys desde Flask
@@ -52,6 +58,7 @@ def chat():
             ]
         )
 
+        #Extraemos la respuesta de openai y mandamos en formato json
         bot_response = response.choices[0].message.content
         return jsonify({"response": bot_response})
 
