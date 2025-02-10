@@ -71,8 +71,6 @@ const RegisterScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Registro</Text>
-
       <View style={styles.inputContainer}>
         <Icon name="person-outline" size={24} color="#6A5ACD" style={styles.icon} />
         <TextInput
@@ -169,12 +167,6 @@ const styles = {
     alignItems: "center",
     paddingHorizontal: 20,
     backgroundColor: "#F5F5F5",
-  },
-  title: {
-    fontSize: 26,
-    fontWeight: "bold",
-    marginBottom: 20,
-    color: "#333",
   },
   inputContainer: {
     flexDirection: "row",

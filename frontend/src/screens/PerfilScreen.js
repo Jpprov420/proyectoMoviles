@@ -15,7 +15,7 @@ import { db } from "../api/firebaseConfig";
 
 const PerfilScreen = () => {
   const navigation = useNavigation();
-  const auth = getAuth();
+  const auth = getAuth();//Devuelve la insntancia de autenticación de Firebase
   const [user, setUser] = useState(null);
   const [userData, setUserData] = useState({
     name: "",
@@ -29,12 +29,13 @@ const PerfilScreen = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const currentUser = auth.currentUser;
+        const currentUser = auth.currentUser;//Devuelve el ususario que ha iniciado sesion si esque existe
         if (currentUser) {
           setUser(currentUser);
 
-          // Obtener datos del usuario desde Firestore
+          // Crea una referencia hacia el documento de la coleción Usuarios usando la ID del usuario.
           const docRef = doc(db, "users", currentUser.uid);
+          // Obtener datos del usuario desde Firestore
           const docSnap = await getDoc(docRef);
           if (docSnap.exists()) {
             setUserData(docSnap.data());
@@ -124,7 +125,6 @@ const PerfilScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Perfil del Usuario</Text>
       <Text style={styles.label}>Correo:</Text>
       <Text style={styles.email}>{user?.email}</Text>
 
@@ -189,13 +189,6 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     backgroundColor: "#F5F5F5",
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 20,
-    textAlign: "center",
-    color: "#333",
   },
   label: {
     fontSize: 16,

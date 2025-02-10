@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from "react";
-import { View, Platform, TouchableOpacity } from "react-native";
+import { View, Platform, TouchableOpacity, Text, StyleSheet } from "react-native";
 import { GiftedChat } from "react-native-gifted-chat";
 import { useNavigation } from "@react-navigation/native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
@@ -38,6 +38,17 @@ const ChatScreen = () => {
 
   return (
     <View style={{ flex: 1, paddingBottom: Platform.OS === "ios" ? 20 : 0 }}>
+      <View style={styles.contenedorBarraNavegacion}>
+        <TouchableOpacity style={styles.itemsBarraNavegacion}>
+          <Text style={{ textAlign: "center" }}>Acerca de Nosotros</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.itemsBarraNavegacion}>
+          <Text style={{ textAlign: "center" }}>Chat</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.itemsBarraNavegacion}>
+          <Text style={{ textAlign: "center" }}>Perfil</Text>
+        </TouchableOpacity>
+      </View>
       {/* Botón de perfil en la parte superior derecha */}
       <TouchableOpacity 
         style={{
@@ -49,7 +60,7 @@ const ChatScreen = () => {
           padding: 10,
           borderRadius: 50,
         }}
-        onPress={() => navigation.navigate("Profile")}
+        onPress={() => navigation.replace("Profile")}
       >
         <Icon name="account-circle" size={30} color="#FFF" />
       </TouchableOpacity>
@@ -62,5 +73,20 @@ const ChatScreen = () => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  contenedorBarraNavegacion: {
+    flexDirection: "row",
+    width: "100%",
+  },
+  itemsBarraNavegacion: {
+    width: "33%",
+    backgroundColor: "#e3e3e3",
+    borderWidth: 1,
+    border: 10,
+    padding: 10,
+    
+  }
+});
 
 export default ChatScreen;
