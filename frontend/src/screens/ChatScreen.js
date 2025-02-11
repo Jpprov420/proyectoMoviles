@@ -20,6 +20,7 @@ const ChatScreen = () => {
     ]);
   }, []);
 
+
   const onSend = useCallback(async (newMessages = []) => {
     setMessages((prevMessages) => GiftedChat.append(prevMessages, newMessages));
 
@@ -38,32 +39,6 @@ const ChatScreen = () => {
 
   return (
     <View style={{ flex: 1, paddingBottom: Platform.OS === "ios" ? 20 : 0 }}>
-      <View style={styles.contenedorBarraNavegacion}>
-        <TouchableOpacity style={styles.itemsBarraNavegacion}>
-          <Text style={{ textAlign: "center" }}>Acerca de Nosotros</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.itemsBarraNavegacion}>
-          <Text style={{ textAlign: "center" }}>Chat</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.itemsBarraNavegacion}>
-          <Text style={{ textAlign: "center" }}>Perfil</Text>
-        </TouchableOpacity>
-      </View>
-      {/* Botón de perfil en la parte superior derecha */}
-      <TouchableOpacity 
-        style={{
-          position: "absolute",
-          top: 10,
-          right: 10,
-          zIndex: 10,
-          backgroundColor: "#6A5ACD",
-          padding: 10,
-          borderRadius: 50,
-        }}
-        onPress={() => navigation.replace("Profile")}
-      >
-        <Icon name="account-circle" size={30} color="#FFF" />
-      </TouchableOpacity>
 
       <GiftedChat 
         messages={messages} 
@@ -78,15 +53,44 @@ const styles = StyleSheet.create({
   contenedorBarraNavegacion: {
     flexDirection: "row",
     width: "100%",
+    backgroundColor: "#F0F0F0",
+    paddingVertical: 5,
+    borderTopWidth: 2,
+    borderTopColor: "#CCC",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: -2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 5,
   },
   itemsBarraNavegacion: {
-    width: "33%",
-    backgroundColor: "#e3e3e3",
-    borderWidth: 1,
-    border: 10,
-    padding: 10,
-    
-  }
+    flex: 1,
+    paddingVertical: 15,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#E3E3E3",
+    borderRadius: 10,
+    marginHorizontal: 5,
+  },
+  pestañaActiva: {
+    backgroundColor: "#6A5ACD",
+    borderBottomWidth: 4,
+    borderBottomColor: "#4B0082",
+    transform: [{ scaleY: 0.95 }],
+    shadowColor: "#6A5ACD",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    elevation: 10,
+  },
+  textoPestaña: {
+    color: "#333",
+    fontWeight: "bold",
+    fontSize: 14,
+  },
+  textoActivo: {
+    color: "#FFF",
+  },
 });
 
 export default ChatScreen;

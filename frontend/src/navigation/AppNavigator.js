@@ -1,11 +1,11 @@
 import React from "react";
-import { StyleSheet } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
 import ChatScreen from "../screens/ChatScreen";
 import LoginScreen from "../screens/LoginScreen";
 import RegisterScreen from "../screens/RegisterScreen";
 import ProfileScreen from '../screens/PerfilScreen';
+import NavigationBar from "../components/NavigationBar";
 
 const Stack = createStackNavigator();
 
@@ -16,7 +16,7 @@ const AppNavigator = () => {
         <Stack.Screen 
           name="Login" 
           component={LoginScreen} 
-          options={{ title: "Login", headerTitleAlign: 'center' }}
+          options={{ }}
         />
 
         <Stack.Screen 
@@ -28,18 +28,17 @@ const AppNavigator = () => {
         <Stack.Screen
           name="Profile"
           component={ProfileScreen} 
-          options={{ title: "Perfil", headerTitleAlign: 'center' }}
+          options={{ header: () => <NavigationBar/> }}
         />
 
         <Stack.Screen 
           name="Chat" 
           component={ChatScreen} 
-          options={{ title: "Chat de Rutas", headerTitleAlign: 'center' }} 
+          options={{header: () => <NavigationBar />}}
         />
       </Stack.Navigator>
     </NavigationContainer>
   );
 };
-  
 
 export default AppNavigator;
