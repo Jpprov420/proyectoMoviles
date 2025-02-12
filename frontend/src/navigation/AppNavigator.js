@@ -6,6 +6,7 @@ import LoginScreen from "../screens/LoginScreen";
 import RegisterScreen from "../screens/RegisterScreen";
 import ProfileScreen from '../screens/PerfilScreen';
 import NavigationBar from "../components/NavigationBar";
+import AboutScreen from '../screens/AboutScreen';
 
 const Stack = createStackNavigator();
 
@@ -35,6 +36,12 @@ const AppNavigator = () => {
           name="Chat" 
           component={ChatScreen} 
           options={{header: () => <NavigationBar />}}
+        />
+
+        <Stack.Screen
+          name="About"
+          component={AboutScreen} 
+          options={{ header: () => <NavigationBar/> }}
         />
       </Stack.Navigator>
     </NavigationContainer>
