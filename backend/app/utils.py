@@ -25,7 +25,7 @@ def analizar_mensaje_con_openai(mensaje):
 
     try:
         response = openai_client.chat.completions.create(
-            model="gpt-4",
+            model="gpt-4-turbo",
             messages=[{"role": "system", "content": "Eres un asistente experto en geolocalización."},
                       {"role": "user", "content": prompt}]
         )
@@ -51,12 +51,16 @@ def validar_con_google_maps(lugar):
         places_result = gmaps.places(query=lugar, location=(-0.22985, -78.52495), radius=500)#Radio más preciso
         if places_result.get("results"):
             best_match = places_result["results"][0]  # Tomamos el mejor resultado
-            place_id = best_match["place_id"]
-            
+            coordenadas = best_match["geometry"]["location"] # Obtenemos las coordenadas
+            return (coordenadas["lat"], coordenadas["lng"])
+
+            #place_id = best_match["place_id"]
+
             # 📍 Obtenemos detalles del lugar exacto
-            place_details = gmaps.place(place_id=place_id)
-            if place_details.get("result"):
-                return place_details["result"]["formatted_address"]
+            # place_details = gmaps.place(place_id=place_id)
+            # if place_details.get("result"):
+            #     print(place_details.get("results"))
+            #     return place_details["result"]["formatted_address"]
         # 📌 Si no encontramos con Places, intentamos con Geocoding
         geocode_result = gmaps.geocode(lugar, components={"country": "EC"})
         if geocode_result:
@@ -75,16 +79,23 @@ def extraer_lugares(mensaje):
     """
     # Paso 1: OpenAI extrae posibles lugares
     lugares = analizar_mensaje_con_openai(mensaje)
+    print(lugares)
     origen = validar_con_google_maps(lugares["origen"])
+    print("origen")
+    print(origen)
     destino = validar_con_google_maps(lugares["destino"])
+    print("destino")
+    print(destino)
 
     # Si no hay origen o destino, asignamos valores por defecto
     if not origen and not destino:
-        raise ValueError("No pude identificar lugares en tu pregunta.")
+        raise ValueError("No pude identificar lugares en tu pregunta. Asegúrate de ingresar una dirección o lugar válido y claro.")
     if not origen:
-        origen = "Terminal Quitumbe, Quito"
+        #origen = "Terminal Quitumbe, Quito"
+        raise ValueError("No pude identificar el lugar de partida. Asegúrate de ingresar una dirección o lugar válido y claro.")
     if not destino:
-        destino = "Terminal Quitumbe, Quito"
+        #destino = "Terminal Quitumbe, Quito"
+        raise ValueError("No pude identificar el lugar de destino. Asegúrate de ingresar una dirección o lugar válido y claro.")
 
     print(f"📌 Origen detectado: {origen}")
     print(f"📌 Destino detectado: {destino}")

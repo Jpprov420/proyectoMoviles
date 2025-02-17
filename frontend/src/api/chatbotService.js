@@ -5,7 +5,13 @@ export const sendMessageToChatbot = async (message) => {
   try {
     console.log(`📡 Enviando mensaje al backend: ${message}`);
 
-    const response = await axios.post(`${API_URL}/chat`, 
+    // Verificar si el mensaje solicita una imagen y devuelve true o false
+    const isImageRequest = message.toLowerCase().includes("dame una imagen");
+
+    // Seleccionar el endpoint correcto dependiendo lo que solicita el usuario
+    const endpoint = isImageRequest ? `${API_URL}/imagen` : `${API_URL}/chat`;
+
+    const response = await axios.post(endpoint, 
       JSON.stringify({ message }), // 👈 Asegurarse de enviar un JSON válido
       { headers: { "Content-Type": "application/json" } } // 👈 Agregar el Content-Type
     );

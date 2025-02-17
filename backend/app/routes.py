@@ -3,15 +3,17 @@ from flask import Blueprint, request, jsonify, current_app
 import openai
 import googlemaps
 from .utils import extraer_lugares
+import pandas as pd
 
 # Crear Blueprint para el chatbot
 chatbot_routes = Blueprint("chatbot", __name__)
 
+excel_path = "ruta/al/archivo.xlsx"
+df_buses = pd.read_excel(excel_path)
+
 
 #Asociamos una función con una ruta específica de la API, la ruta sería /chat
 @chatbot_routes.route("/chat", methods=["POST"])
-
-
 def chat():
     try:
         if not request.is_json:
@@ -58,7 +60,7 @@ def chat():
         """
 
         response = openai_client.chat.completions.create(
-            model="gpt-4",
+            model="gpt-4-turbo",
             messages=[
                 {"role": "system", "content": "Eres un asistente de navegación que da instrucciones claras y naturales."},
                 {"role": "user", "content": prompt}
@@ -74,9 +76,27 @@ def chat():
         return jsonify({"error": "Error interno del servidor."}), 500
 
 
+
+@chatbot_routes.route("/imagen", methods=["POST"])
+def imagen():
+    try:
+        if not request.is_json:
+            return jsonify({"error": "Solicitud inválida. Asegúrate de enviar un JSON."}), 400
+
+        data = request.get_json()
+        print(f"📥 Datos recibidos en Flask: {data}")
+
+        if "message" not in data or not data["message"]:
+            return jsonify({"error": "Mensaje vacío o incorrecto."}), 400
+
+        #Extraemos el mensaje del usuario
+        user_message = data["message"]
+        return jsonify({"response": "Trabajando en poder brindarte una imagen :3"})
+    except Exception as e:
+        print(f"❌ Error en el backend: {e}")
+        return jsonify({"error": "Error interno del servidor."}), 500
+
 def obtener_ruta_transporte(origen, destino, gmaps):
-    origen="-0.257190, -78.542419"
-    destino="Edificio Signature"
     """
     Obtiene la mejor ruta de transporte público con base en tráfico y tiempo real.
     """
