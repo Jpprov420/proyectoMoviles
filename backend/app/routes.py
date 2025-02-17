@@ -2,7 +2,7 @@
 from flask import Blueprint, request, jsonify, current_app
 import openai
 import googlemaps
-from .utils import extraer_lugares, obtener_paradas_reales
+from .utils import extraer_lugares
 
 # Crear Blueprint para el chatbot
 chatbot_routes = Blueprint("chatbot", __name__)
@@ -47,14 +47,21 @@ def chat():
 
         # Obtener la mejor ruta de transporte público
         ruta = obtener_ruta_transporte(origen, destino, gmaps)
+        print("Rutaaa!!!!!!")
+        print(ruta)
 
         # Generar respuesta con OpenAI
+        
+        prompt = f"""
+        Traduce las siguientes indicaciones al español y da un formato agradable, quita los saltos de línea innecesarios, mantén los emojis y elimina los asteriscos innecesarios para que se pueda visualizar de una manera agradable:
+        {chr(10).join(ruta)}
+        """
+
         response = openai_client.chat.completions.create(
             model="gpt-4",
             messages=[
-                {"role": "system", "content": "Eres un asistente que da la mejor ruta de buses en Quito."},
-                {"role": "user", "content": f"{user_message}"},
-                {"role": "assistant", "content": ruta}
+                {"role": "system", "content": "Eres un asistente de navegación que da instrucciones claras y naturales."},
+                {"role": "user", "content": prompt}
             ]
         )
 
@@ -68,16 +75,19 @@ def chat():
 
 
 def obtener_ruta_transporte(origen, destino, gmaps):
+    origen="-0.257190, -78.542419"
+    destino="Edificio Signature"
     """
     Obtiene la mejor ruta de transporte público con base en tráfico y tiempo real.
     """
     try:
         rutas = gmaps.directions(
-            origen,
-            destino,
+            origin=origen,
+            destination=destino,
             mode="transit",
             departure_time="now",  # Tráfico en tiempo real
-            alternatives=True  # Pedimos múltiples opciones
+            #alternatives=True  # Pedimos múltiples opciones
+            region="ec"
         )
 
         if not rutas:
@@ -90,8 +100,8 @@ def obtener_ruta_transporte(origen, destino, gmaps):
         print(f"✅ Mejor ruta seleccionada: {duracion_total}")
 
         # Obtener paradas reales cercanas al origen y destino
-        paradas_origen = obtener_paradas_reales(origen, destino)
-        paradas_destino = obtener_paradas_reales(destino, origen)
+        #paradas_origen = obtener_paradas_reales(origen, destino)
+        #paradas_destino = obtener_paradas_reales(destino, origen)
 
         pasos = []
         for i, paso in enumerate(ruta_mas_corta["legs"][0]["steps"]):
@@ -113,10 +123,11 @@ def obtener_ruta_transporte(origen, destino, gmaps):
                 pasos.append(f"{i+1}️⃣ 🚶 {paso['html_instructions']}")
 
         return (
-            f"🕒 **Tiempo estimado:** {duracion_total}\n\n"
-            f"🚌 **Paradas cercanas al origen:** {', '.join(paradas_origen)}\n"
-            f"🏁 **Paradas cercanas al destino:** {', '.join(paradas_destino)}\n\n"
-            + "\n".join(pasos)
+            #f"🕒 **Tiempo estimado:** {duracion_total}\n\n"
+            #f"🚌 **Paradas cercanas al origen:** {', '.join(paradas_origen)}\n"
+            #f"🏁 **Paradas cercanas al destino:** {', '.join(paradas_destino)}\n\n"
+            #+ "\n".join(pasos)
+            "\n".join(pasos)
         )
 
     except Exception as e:

@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 def create_app():
-    app = Flask(__name__)
+    app = Flask(__name__) # Crea una instancia de Flask
     CORS(app)  # Habilitar CORS para evitar restricciones en las peticiones del frontend
 
     # Guardar las variable de entorno previamente cargadas por load_dotenv() en la configuración de Flask
@@ -16,7 +16,7 @@ def create_app():
     app.config["GOOGLE_MAPS_API_KEY"] = os.getenv("GOOGLE_MAPS_API_KEY")
 
     # Registrar las rutas del chatbot
-    from .routes import chatbot_routes
-    app.register_blueprint(chatbot_routes)
+    from .routes import chatbot_routes # Trae el bluprint chatbot_routes del archivo routes
+    app.register_blueprint(chatbot_routes) # Registramos el bluepint en el servidor de Flask (Un Blueprint es un modulo que agrupa rutas relacionadas)
 
     return app

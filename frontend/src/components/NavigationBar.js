@@ -63,7 +63,6 @@ const styles = StyleSheet.create({
   },
   tabButton: {
     flex: 1,
-    paddingVertical: 10,
     paddingVertical: 20,
     alignItems: "center",
     backgroundColor: "#6A5ACD",
@@ -76,6 +75,7 @@ const styles = StyleSheet.create({
     borderColor: "#3a3a3a",
     shadowColor: "#000",
     elevation: 5,
+    shadowColor: "#000", // Sombra en iOS
   },
   tabText: {
     fontSize: 16,

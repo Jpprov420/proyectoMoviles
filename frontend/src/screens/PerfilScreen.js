@@ -15,7 +15,7 @@ import { db } from "../api/firebaseConfig";
 
 const PerfilScreen = () => {
   const navigation = useNavigation();
-  const auth = getAuth();//Devuelve la insntancia de autenticación de Firebase
+  const auth = getAuth(); // Devuelve la insntancia de autenticación de Firebase
   const [user, setUser] = useState(null);
   const [userData, setUserData] = useState({
     name: "",
