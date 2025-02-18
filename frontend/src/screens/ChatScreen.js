@@ -1,9 +1,9 @@
 import React, { useState, useCallback, useEffect } from "react";
-import { View, Platform, TouchableOpacity, Text, StyleSheet } from "react-native";
+import { View, Platform, Image, StyleSheet } from "react-native";
 import { GiftedChat } from "react-native-gifted-chat";
 import { useNavigation } from "@react-navigation/native";
-import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { sendMessageToChatbot } from "../api/chatbotService";
+import ChatBubble from "../components/ChatBubble"; // Importa la burbuja personalizada
 
 const ChatScreen = () => {
   const [messages, setMessages] = useState([]);
@@ -13,13 +13,16 @@ const ChatScreen = () => {
     setMessages([
       {
         _id: 1,
-        text: "Hola 👋 ¿Cómo puedo ayudarte con las rutas de buses?",
+        text: "Hola soy Pikito👋 ¿Cómo puedo ayudarte con las rutas de buses?",
         createdAt: new Date(),
-        user: { _id: 2, name: "Chatbot" },
+        user: { 
+          _id: 2, 
+          name: "Chatbot",
+          avatar: require("../../assets/pikito.png"), 
+        },
       },
     ]);
   }, []);
-
 
   const onSend = useCallback(async (newMessages = []) => {
     setMessages((prevMessages) => GiftedChat.append(prevMessages, newMessages));
@@ -31,65 +34,44 @@ const ChatScreen = () => {
       _id: Math.random().toString(),
       text: botResponse,
       createdAt: new Date(),
-      user: { _id: 2, name: "Chatbot" },
+      user: { 
+        _id: 2, 
+        name: "Chatbot",
+        avatar: require("../../assets/pikito.png"), 
+      },
     };
 
     setMessages((prevMessages) => GiftedChat.append(prevMessages, [botMessage]));
   }, []);
 
+  const renderAvatar = (props) => {
+    return (
+      <Image
+        source={props.currentMessage.user.avatar}
+        style={styles.avatar}
+      />
+    );
+  };
+
   return (
     <View style={{ flex: 1, paddingBottom: Platform.OS === "ios" ? 20 : 0 }}>
-
       <GiftedChat 
         messages={messages} 
         onSend={(messages) => onSend(messages)} 
         user={{ _id: 1 }} 
+        renderBubble={(props) => <ChatBubble {...props} />} 
+        renderAvatar={renderAvatar} 
       />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  contenedorBarraNavegacion: {
-    flexDirection: "row",
-    width: "100%",
-    backgroundColor: "#F0F0F0",
-    paddingVertical: 5,
-    borderTopWidth: 2,
-    borderTopColor: "#CCC",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: -2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
-    elevation: 5,
-  },
-  itemsBarraNavegacion: {
-    flex: 1,
-    paddingVertical: 15,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#E3E3E3",
-    borderRadius: 10,
-    marginHorizontal: 5,
-  },
-  pestañaActiva: {
-    backgroundColor: "#6A5ACD",
-    borderBottomWidth: 4,
-    borderBottomColor: "#4B0082",
-    transform: [{ scaleY: 0.95 }],
-    shadowColor: "#6A5ACD",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 5,
-    elevation: 10,
-  },
-  textoPestaña: {
-    color: "#333",
-    fontWeight: "bold",
-    fontSize: 14,
-  },
-  textoActivo: {
-    color: "#FFF",
+  avatar: {
+    width: 50,
+    height: 50,
+    borderRadius: 0, 
+    resizeMode: "contain", 
   },
 });
 

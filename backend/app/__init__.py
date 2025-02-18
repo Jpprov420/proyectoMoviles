@@ -4,12 +4,12 @@ from flask import Flask
 from flask_cors import CORS
 from dotenv import load_dotenv
 
-# Cargar variables de entorno desde .env
+# Cargar variables de entorno desde .env Esto es útil para no escribir claves API o configuraciones sensibles en el código.
 load_dotenv()
 
 def create_app():
     app = Flask(__name__)
-    CORS(app)  # Habilitar CORS para evitar restricciones en las peticiones del frontend
+    CORS(app)  # Habilitar CORS para evitar restricciones en las peticiones del frontend Permite que el frontend pueda hacer peticiones al backend sin restricciones de origen
 
     # Guardar las variable de entorno previamente cargadas por load_dotenv() en la configuración de Flask
     app.config["OPENAI_API_KEY"] = os.getenv("OPENAI_API_KEY")

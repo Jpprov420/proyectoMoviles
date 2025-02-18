@@ -6,36 +6,29 @@ import {
   TouchableOpacity,
   Alert,
   ActivityIndicator,
-  StyleSheet,
+  StyleSheet
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { getAuth, signOut, deleteUser } from "firebase/auth";
 import { doc, getDoc, updateDoc, deleteDoc } from "firebase/firestore";
 import { db } from "../api/firebaseConfig";
+import { MaterialIcons, FontAwesome } from '@expo/vector-icons';
 
 const PerfilScreen = () => {
   const navigation = useNavigation();
-  const auth = getAuth();//Devuelve la insntancia de autenticación de Firebase
+  const auth = getAuth();
   const [user, setUser] = useState(null);
-  const [userData, setUserData] = useState({
-    name: "",
-    age: "",
-    address: "",
-    gender: "",
-  });
+  const [userData, setUserData] = useState({ name: "", age: "", address: "", gender: "" });
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(false);
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const currentUser = auth.currentUser;//Devuelve el ususario que ha iniciado sesion si esque existe
+        const currentUser = auth.currentUser;
         if (currentUser) {
           setUser(currentUser);
-
-          // Crea una referencia hacia el documento de la coleción Usuarios usando la ID del usuario.
           const docRef = doc(db, "users", currentUser.uid);
-          // Obtener datos del usuario desde Firestore
           const docSnap = await getDoc(docRef);
           if (docSnap.exists()) {
             setUserData(docSnap.data());
@@ -49,7 +42,6 @@ const PerfilScreen = () => {
         setLoading(false);
       }
     };
-
     fetchUserData();
   }, []);
 
@@ -67,21 +59,14 @@ const PerfilScreen = () => {
       Alert.alert("Error", "Todos los campos son obligatorios.");
       return;
     }
-
     if (isNaN(userData.age) || userData.age < 18) {
       Alert.alert("Error", "Por favor, ingresa una edad válida y mayor a 18 años.");
       return;
     }
-
     try {
       setLoading(true);
       const docRef = doc(db, "users", user.uid);
-      await updateDoc(docRef, {
-        name: userData.name,
-        age: userData.age,
-        address: userData.address,
-        gender: userData.gender,
-      });
+      await updateDoc(docRef, userData);
       Alert.alert("Éxito", "Perfil actualizado correctamente.");
       setEditing(false);
     } catch (error) {
@@ -91,95 +76,69 @@ const PerfilScreen = () => {
     }
   };
 
-  const handleDeleteAccount = async () => {
-    Alert.alert(
-      "Eliminar cuenta",
-      "¿Estás seguro de que deseas eliminar tu cuenta? Esta acción no se puede deshacer.",
-      [
-        { text: "Cancelar", style: "cancel" },
-        {
-          text: "Eliminar",
-          style: "destructive",
-          onPress: async () => {
-            try {
-              setLoading(true);
-              const docRef = doc(db, "users", user.uid);
-              await deleteDoc(docRef); // Eliminar datos de Firestore
-              await deleteUser(auth.currentUser); // Eliminar cuenta del usuario
-              Alert.alert("Éxito", "Cuenta eliminada correctamente.");
-              navigation.replace("Login");
-            } catch (error) {
-              Alert.alert("Error", "No se pudo eliminar la cuenta.");
-            } finally {
-              setLoading(false);
-            }
-          },
-        },
-      ]
-    );
-  };
-
   if (loading) {
-    return <ActivityIndicator size="large" color="#6A5ACD" />;
+    return <ActivityIndicator size="large" color="#3b49e9" />;
   }
 
   return (
     <View style={styles.container}>
-      <Text style={styles.label}>Correo:</Text>
-      <Text style={styles.email}>{user?.email}</Text>
-
-      <Text style={styles.label}>Nombre completo:</Text>
-      <TextInput
-        style={styles.input}
-        value={userData.name}
-        onChangeText={(text) => setUserData({ ...userData, name: text })}
-        editable={editing}
-      />
-
-      <Text style={styles.label}>Edad:</Text>
-      <TextInput
-        style={styles.input}
-        value={String(userData.age)}
-        onChangeText={(text) => setUserData({ ...userData, age: text })}
-        keyboardType="numeric"
-        editable={editing}
-      />
-
-      <Text style={styles.label}>Dirección:</Text>
-      <TextInput
-        style={styles.input}
-        value={userData.address}
-        onChangeText={(text) => setUserData({ ...userData, address: text })}
-        editable={editing}
-      />
-
-      <Text style={styles.label}>Sexo:</Text>
-      <TextInput
-        style={styles.input}
-        value={userData.gender}
-        onChangeText={(text) => setUserData({ ...userData, gender: text })}
-        editable={editing}
-      />
-
-      <View style={styles.buttonContainer}>
-        {editing ? (
-          <TouchableOpacity style={styles.button} onPress={handleUpdate}>
-            <Text style={styles.buttonText}>Guardar Cambios</Text>
-          </TouchableOpacity>
-        ) : (
-          <TouchableOpacity style={styles.button} onPress={() => setEditing(true)}>
-            <Text style={styles.buttonText}>Editar Perfil</Text>
-          </TouchableOpacity>
-        )}
-
-        <TouchableOpacity style={[styles.button, styles.logoutButton]} onPress={handleLogout}>
-          <Text style={styles.buttonText}>Cerrar Sesión</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={[styles.button, styles.deleteButton]} onPress={handleDeleteAccount}>
-          <Text style={styles.buttonText}>Eliminar Cuenta</Text>
-        </TouchableOpacity>
+      <View style={styles.profileContainer}>
+        <FontAwesome name="user-circle" size={100} color="#666" />
+        <Text style={styles.userEmail}>{user?.email}</Text>
       </View>
+      <View style={styles.inputContainer}>
+        <MaterialIcons name="person" size={20} color="#1e4188" style={styles.icon} />
+        <TextInput
+          style={styles.input}
+          value={userData.name}
+          placeholder="Nombre completo"
+          onChangeText={(text) => setUserData({ ...userData, name: text })}
+          editable={editing}
+        />
+      </View>
+      <View style={styles.inputContainer}>
+        <MaterialIcons name="calendar-today" size={20} color="#1e4188" style={styles.icon} />
+        <TextInput
+          style={styles.input}
+          value={String(userData.age)}
+          placeholder="Edad"
+          keyboardType="numeric"
+          onChangeText={(text) => setUserData({ ...userData, age: text })}
+          editable={editing}
+        />
+      </View>
+      <View style={styles.inputContainer}>
+        <MaterialIcons name="location-on" size={20} color="#1e4188" style={styles.icon} />
+        <TextInput
+          style={styles.input}
+          value={userData.address}
+          placeholder="Dirección"
+          onChangeText={(text) => setUserData({ ...userData, address: text })}
+          editable={editing}
+        />
+      </View>
+      <View style={styles.inputContainer}>
+        <MaterialIcons name="wc" size={20} color="#1e4188" style={styles.icon} />
+        <TextInput
+          style={styles.input}
+          value={userData.gender}
+          placeholder="Sexo"
+          onChangeText={(text) => setUserData({ ...userData, gender: text })}
+          editable={editing}
+        />
+      </View>
+      <TouchableOpacity style={styles.button} onPress={editing ? handleUpdate : () => setEditing(true)}>
+        <MaterialIcons name="edit" size={20} color="#fff" />
+        <Text style={styles.buttonText}>{editing ? "Guardar Cambios" : "Editar Perfil"}</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={[styles.button, styles.logoutButton]} onPress={handleLogout}>
+        <MaterialIcons name="logout" size={20} color="#fff" />
+        <Text style={styles.buttonText}>Cerrar Sesión</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={[styles.button, styles.deleteButton]}>
+        <MaterialIcons name="delete" size={20} color="#fff" />
+        <Text style={styles.buttonText}>Eliminar Cuenta</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -187,48 +146,54 @@ const PerfilScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
-    backgroundColor: "#F5F5F5",
+    backgroundColor: "#f8f9fa",
+    alignItems: "center",
+    paddingTop: 40
   },
-  label: {
-    fontSize: 16,
-    fontWeight: "bold",
-    marginTop: 10,
-    color: "#555",
-  },
-  email: {
-    fontSize: 16,
-    color: "#666",
+  profileContainer: {
+    alignItems: "center",
     marginBottom: 20,
   },
-  input: {
+  userEmail: {
+    fontSize: 18,
+    color: "#171a1f",
+    fontWeight: "bold",
+    marginTop: 10,
+  },
+  inputContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    width: "85%",
+    backgroundColor: "#fff",
     borderWidth: 1,
     borderColor: "#ccc",
-    borderRadius: 10,
-    padding: 10,
+    borderRadius: 12,
+    paddingHorizontal: 10,
     marginBottom: 10,
-    backgroundColor: "#fff",
   },
-  buttonContainer: {
-    marginTop: 20,
+  icon: {
+    marginRight: 10,
+  },
+  input: {
+    flex: 1,
+    paddingVertical: 10,
   },
   button: {
-    backgroundColor: "#6A5ACD",
-    padding: 15,
-    borderRadius: 10,
-    marginBottom: 10,
+    flexDirection: "row",
+    justifyContent: "center",
     alignItems: "center",
+    width: "85%",
+    padding: 12,
+    borderRadius: 12,
+    backgroundColor: "#154bbb",
+    marginBottom: 10,  
+
   },
   buttonText: {
-    color: "#FFF",
-    fontWeight: "bold",
-  },
-  logoutButton: {
-    backgroundColor: "#FFA500",
-  },
-  deleteButton: {
-    backgroundColor: "#FF0000",
-  },
+    color: "#fff",
+    fontSize: 16,
+    marginLeft: 8,
+  }
 });
 
 export default PerfilScreen;

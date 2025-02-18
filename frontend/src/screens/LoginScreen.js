@@ -41,11 +41,11 @@ const LoginScreen = () => {
     <View style={styles.container}>
       <Image source={require('../../assets/train.png')} style={styles.icon} />
       <Text style={styles.title}>Movilízate UIO!</Text>
-      <Text style={styles.subtitle}>Planifica tu viaje en transporte público con precisión.</Text>
+      <Text style={styles.subtitle}>Pikito te guía, Quito te espera.</Text>
       
       {/* Campo de correo */}
       <View style={styles.inputContainer}>
-        <Icon name="email-outline" size={24} color="#6A5ACD" style={styles.inputIcon} />
+        <Icon name="email-outline" size={24} color="#1e4188" style={styles.inputIcon} />
         <TextInput
           style={styles.input}
           placeholder="Ingresa tu correo electrónico"
@@ -58,7 +58,7 @@ const LoginScreen = () => {
 
       {/* Campo de contraseña */}
       <View style={styles.inputContainer}>
-        <Icon name="lock-outline" size={24} color="#6A5ACD" style={styles.inputIcon} />
+        <Icon name="lock-outline" size={24} color="#1e4188" style={styles.inputIcon} />
         <TextInput
           style={styles.input}
           placeholder="Ingresa tu contraseña"
@@ -67,7 +67,7 @@ const LoginScreen = () => {
           onChangeText={setPassword}
         />
         <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.passwordToggle}>
-          <Icon name={showPassword ? "eye-off-outline" : "eye-outline"} size={24} color="#6A5ACD" />
+          <Icon name={showPassword ? "eye-off-outline" : "eye-outline"} size={24} color="#1e4188" />
         </TouchableOpacity>
       </View>
 
@@ -91,19 +91,22 @@ const styles = {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: 20,
+    paddingHorizontal: 20,  
     backgroundColor: '#F5F5F5',
   },
   icon: {
-    width: 100,
-    height: 100,
-    marginBottom: 20,
+    width: 200,
+    height: 200,
+    marginBottom: 10,
+    resizeMode: "contain",
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
     color: '#333',
     marginBottom: 5,
+    marginTop: 10,
+
   },
   subtitle: {
     fontSize: 14,
@@ -140,12 +143,12 @@ const styles = {
     marginBottom: 10,
   },
   linkText: {
-    color: '#6A5ACD',
+    color: '#154bbb',
     textDecorationLine: 'underline',
     marginBottom: 10,
   },
   button: {
-    backgroundColor: '#6A5ACD',
+    backgroundColor: '#154bbb',
     padding: 15,
     borderRadius: 10,
     width: '100%',

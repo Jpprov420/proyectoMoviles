@@ -12,7 +12,7 @@ export const sendMessageToChatbot = async (message) => {
 
     console.log("✅ Respuesta del backend:", response.data);
     return response.data.response;
-  } catch (error) {
+  } catch (error) {  //Manejo de errores
     console.error("❌ Error en la solicitud:", error);
     return "Hubo un error al procesar tu solicitud.";
   }

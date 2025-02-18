@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
+import { FontAwesome } from "@expo/vector-icons";
 
 const NavigationBar = () => {
   const navigation = useNavigation();
@@ -8,82 +9,75 @@ const NavigationBar = () => {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity
-        style={[
-          styles.tabButton,
-          route.name === "About" && styles.activeTab,
-        ]}
-        onPress={() => navigation.replace("About")}
-      >
-        <Text style={[styles.tabText, route.name === "About" && styles.activeText]}>
-          Acerca de
-        </Text>
-      </TouchableOpacity>
+      {/* Texto a la izquierda */}
+      <Text style={styles.title}>Movilízate UIO!</Text>
 
-      <TouchableOpacity
-        style={[
-          styles.tabButton,
-          route.name === "Chat" && styles.activeTab,
-        ]}
-        onPress={() => navigation.replace("Chat")}
-      >
-        <Text style={[styles.tabText, route.name === "Chat" && styles.activeText]}>
-          Chat
-        </Text>
-      </TouchableOpacity>
+      {/* Botones con íconos a la derecha */}
+      <View style={styles.iconContainer}>
+        <TouchableOpacity
+          style={[styles.tabButton, route.name === "About" && styles.activeTab]}
+          onPress={() => navigation.replace("About")}
+        >
+          <FontAwesome 
+            name="info-circle" 
+            size={22} 
+            color={route.name === "About" ? "#1e4188" : "#333"} 
+          />
+        </TouchableOpacity>
 
-      <TouchableOpacity
-        style={[
-          styles.tabButton,
-          route.name === "Profile" && styles.activeTab,
-        ]}
-        onPress={() => navigation.replace("Profile")}
-      >
-        <Text style={[styles.tabText, route.name === "Profile" && styles.activeText]}>
-          Perfil
-        </Text>
-      </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.tabButton, route.name === "Chat" && styles.activeTab]}
+          onPress={() => navigation.replace("Chat")}
+        >
+          <FontAwesome 
+            name="comments" 
+            size={22} 
+            color={route.name === "Chat" ? "#1e4188" : "#333"} 
+          />
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[styles.tabButton, route.name === "Profile" && styles.activeTab]}
+          onPress={() => navigation.replace("Profile")}
+        >
+          <FontAwesome 
+            name="user-circle" 
+            size={22} 
+            color={route.name === "Profile" ? "#1e4188" : "#333"} 
+          />
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    width: "100%",
-    height: "auto",
     flexDirection: "row",
-    backgroundColor: "#ddd",
-    justifyContent: "space-around",
     alignItems: "center",
-    elevation: 5, // Sombra en Android
-    shadowColor: "#000", // Sombra en iOS
+    justifyContent: "space-between",
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    backgroundColor: "#FFF",
+    elevation: 5,
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+  },
+  title: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#000",
+  },
+  iconContainer: {
+    flexDirection: "row",
   },
   tabButton: {
-    flex: 1,
-    paddingVertical: 10,
-    paddingVertical: 20,
-    alignItems: "center",
-    backgroundColor: "#6A5ACD",
-    height: "auto"
+    marginHorizontal: 10,
   },
   activeTab: {
-    backgroundColor: "rgb(120, 100, 250)", // Color diferente cuando está seleccionado
-    borderRightWidth:1,
-    borderLeftWidth: 1,
-    borderColor: "#3a3a3a",
-    shadowColor: "#000",
-    elevation: 5,
-  },
-  tabText: {
-    fontSize: 16,
-    fontWeight: "bold",
-    color: "#333",
-  },
-  activeText: {
-    color: "#FFF", // Texto en blanco cuando está seleccionado
+    backgroundColor: "transparent",
   },
 });
 

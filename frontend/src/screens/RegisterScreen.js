@@ -69,10 +69,13 @@ const RegisterScreen = () => {
     }
   };
 
+  
+
   return (
-    <View style={styles.container}>
+         
+    <View style={styles.container}>        
       <View style={styles.inputContainer}>
-        <Icon name="person-outline" size={24} color="#6A5ACD" style={styles.icon} />
+        <Icon name="person-outline" size={24} color="#1e4188" style={styles.icon} />
         <TextInput
           style={styles.input}
           placeholder="Nombre completo"
@@ -82,7 +85,7 @@ const RegisterScreen = () => {
       </View>
 
       <View style={styles.inputContainer}>
-        <Icon name="mail-outline" size={24} color="#6A5ACD" style={styles.icon} />
+        <Icon name="mail-outline" size={24} color="#1e4188" style={styles.icon} />
         <TextInput
           style={styles.input}
           placeholder="Correo electrónico"
@@ -94,7 +97,7 @@ const RegisterScreen = () => {
       </View>
 
       <View style={styles.inputContainer}>
-        <Icon name="lock-closed-outline" size={24} color="#6A5ACD" style={styles.icon} />
+        <Icon name="lock-closed-outline" size={24} color="#1e4188" style={styles.icon} />
         <TextInput
           style={styles.input}
           placeholder="Contraseña"
@@ -105,7 +108,7 @@ const RegisterScreen = () => {
       </View>
 
       <View style={styles.inputContainer}>
-        <Icon name="lock-closed-outline" size={24} color="#6A5ACD" style={styles.icon} />
+        <Icon name="lock-closed-outline" size={24} color="#1e4188" style={styles.icon} />
         <TextInput
           style={styles.input}
           placeholder="Confirmar contraseña"
@@ -116,7 +119,7 @@ const RegisterScreen = () => {
       </View>
 
       <View style={styles.inputContainer}>
-        <Icon name="calendar-outline" size={24} color="#6A5ACD" style={styles.icon} />
+        <Icon name="calendar-outline" size={24} color="#1e4188" style={styles.icon} />
         <TextInput
           style={styles.input}
           placeholder="Edad"
@@ -127,7 +130,7 @@ const RegisterScreen = () => {
       </View>
 
       <View style={styles.inputContainer}>
-        <Icon name="location-outline" size={24} color="#6A5ACD" style={styles.icon} />
+        <Icon name="location-outline" size={24} color="#1e4188" style={styles.icon} />
         <TextInput
           style={styles.input}
           placeholder="Dirección"
@@ -137,7 +140,7 @@ const RegisterScreen = () => {
       </View>
 
       <View style={styles.inputContainer}>
-        <Icon name="male-female" size={24} color="#6A5ACD" style={styles.icon} />
+        <Icon name="male-female" size={24} color="#1e4188" style={styles.icon} />
         <TextInput
           style={styles.input}
           placeholder="Sexo (Masculino/Femenino)"
@@ -156,8 +159,9 @@ const RegisterScreen = () => {
       <TouchableOpacity onPress={() => navigation.replace("Login")}>
         <Text style={styles.linkText}>¿Ya tienes una cuenta? Inicia sesión</Text>
       </TouchableOpacity>
-    </View>
+    </View>  
   );
+  
 };
 
 const styles = {
@@ -189,7 +193,7 @@ const styles = {
     fontSize: 16,
   },
   button: {
-    backgroundColor: "#6A5ACD",
+    backgroundColor: "#154bbb",
     padding: 15,
     borderRadius: 10,
     width: "100%",
@@ -203,7 +207,7 @@ const styles = {
   },
   linkText: {
     marginTop: 15,
-    color: "#6A5ACD",
+    color: "#154bbb",
     fontSize: 14,
   },
 };
