@@ -24,15 +24,19 @@ const ChatScreen = () => {
     ]);
   }, []);
 
+  //usamos el hook useCallback para optimizar el rendimiento al renderizar constantemente el chat cada que se envían y reciben mensajes nuevos, por lo tanto la función onSend solo se creará una vez y se memorizará para cada render
   const onSend = useCallback(async (newMessages = []) => {
     setMessages((prevMessages) => GiftedChat.append(prevMessages, newMessages));
 
-    const userMessage = newMessages[0];
-    const botResponse = await sendMessageToChatbot(userMessage.text);
+    const userMessage = newMessages[0];//contiene el mensaje que estamos enviando
+    const botResponse = await sendMessageToChatbot(userMessage.text);//usamos la propiedad text de ese objeto
 
+    // Detectar si la respuesta es una URL de imagen
+    const isImage = typeof botResponse === "string" && botResponse.startsWith("http");
+
+    //creamos la estructura del objeto mensaje a partir del texto o imagen que devolvió la api
     const botMessage = {
       _id: Math.random().toString(),
-      text: botResponse,
       createdAt: new Date(),
       user: { 
         _id: 2, 

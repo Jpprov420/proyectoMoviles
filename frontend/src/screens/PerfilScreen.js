@@ -16,7 +16,7 @@ import { MaterialIcons, FontAwesome } from '@expo/vector-icons';
 
 const PerfilScreen = () => {
   const navigation = useNavigation();
-  const auth = getAuth();
+  const auth = getAuth(); // Devuelve la insntancia de autenticación de Firebase
   const [user, setUser] = useState(null);
   const [userData, setUserData] = useState({ name: "", age: "", address: "", gender: "" });
   const [loading, setLoading] = useState(true);
