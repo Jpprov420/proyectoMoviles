@@ -27,12 +27,17 @@ const ChatScreen = () => {
     const userMessage = newMessages[0];//contiene el mensaje que estamos enviando
     const botResponse = await sendMessageToChatbot(userMessage.text);//usamos la propiedad text de ese objeto
 
-    //creamos la estructura del objeto mensaje a partir del texto que devolvió la api
+    // Detectar si la respuesta es una URL de imagen
+    const isImage = typeof botResponse === "string" && botResponse.startsWith("http");
+
+    //creamos la estructura del objeto mensaje a partir del texto o imagen que devolvió la api
     const botMessage = {
       _id: Math.random().toString(),
-      text: botResponse,
       createdAt: new Date(),
       user: { _id: 2, name: "Chatbot" },
+      ...(isImage
+        ? { image: botResponse } // Si es una imagen, usa la propiedad image
+        : { text: botResponse }), // Si no, usa text
     };
 
     setMessages((prevMessages) => GiftedChat.append(prevMessages, [botMessage]));

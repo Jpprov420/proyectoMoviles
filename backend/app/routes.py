@@ -4,12 +4,16 @@ import openai
 import googlemaps
 from .utils import extraer_lugares
 import pandas as pd
+import os
 
 # Crear Blueprint para el chatbot
 chatbot_routes = Blueprint("chatbot", __name__)
 
-excel_path = "ruta/al/archivo.xlsx"
-df_buses = pd.read_excel(excel_path)
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__)) # Ruta base del proyecto
+EXCEL_PATH = os.path.join(BASE_DIR, "Data", "Transporte.xlsx")  # Ruta del archivo
+
+df_buses = pd.read_excel(EXCEL_PATH) # cargamos los datos del excel a un data frame
 
 
 #Asociamos una función con una ruta específica de la API, la ruta sería /chat
@@ -45,7 +49,7 @@ def chat():
             print(f"📍 Origen detectado: {origen} | Destino detectado: {destino}")
         except ValueError as e:
             print(f"❌ Error al extraer lugares: {str(e)}")
-            return jsonify({"error": str(e)}), 400
+            return jsonify({"response": str(e)})
 
         # Obtener la mejor ruta de transporte público
         ruta = obtener_ruta_transporte(origen, destino, gmaps)
@@ -91,7 +95,47 @@ def imagen():
 
         #Extraemos el mensaje del usuario
         user_message = data["message"]
-        return jsonify({"response": "Trabajando en poder brindarte una imagen :3"})
+
+        # Obtener la API Key desde Flask
+        openai_api_key = current_app.config.get("OPENAI_API_KEY")
+
+        if not openai_api_key:
+            return jsonify({"error": "Falta las API Key de OpenAI en la configuración."}), 500
+
+        # Inicializar clientes de OpenAI y Google Maps
+        openai_client = openai.OpenAI(api_key=openai_api_key)
+
+        prompt = f"""
+        El siguiente mensaje contiene un código de bus, dicho código pueden ser números o letras o una combinación de ambos, por ejemplo "66", "E1", "IN01". Si no logras identificar dicho código tu respuesta debe ser el número 1000. Si logras identificar el código responde únicamente con el código. Mensaje:
+        {chr(10).join(user_message)}
+        """
+
+        response = openai_client.chat.completions.create(
+            model="gpt-4-turbo",
+            messages=[
+                {"role": "system", "content": "Eres un asistente que identifica códigos alfanuméricos de buses."},
+                {"role": "user", "content": prompt}
+            ]
+        )
+        id_bus = response.choices[0].message.content
+        print("Id!!!!!!!!!!!!!!!!!!!!!")
+        print(id_bus)
+
+        if id_bus == "1000":
+            return jsonify({"response": "No pude identificar el bus que estás solicitando, asegúrate de escribir bien el código del bus."})
+        
+        # Buscamos el id en del data frame (la columna se llama linea en el excel) pero primero convertimos esa columna del dataframe en string y hacemos lo mismo para el id extraido del mensaje
+        resultado = df_buses[df_buses["linea"].astype(str) == str(id_bus)]
+
+        if resultado.empty:
+            return jsonify({"response": "No encontré información sobre ese bus, asegúrate de escribir bien el código del bus."})
+        
+        # Obtenemos el link de la imagen (suponiendo que la columna se llama 'imagen')
+        link_imagen = resultado.iloc[0]["imagen"] 
+        print("Link de la imagen!!!!!!!!!!")
+        print(link_imagen)
+
+        return jsonify({"response": link_imagen})
     except Exception as e:
         print(f"❌ Error en el backend: {e}")
         return jsonify({"error": "Error interno del servidor."}), 500
